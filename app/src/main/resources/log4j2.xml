@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <!-- Properties -->
+    <Properties>
+        <Property name="CONSOLE_LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss}}{blue} %highlight{%-5level} %style{[%thread]}{magenta} %style{%logger{36}}{cyan} - %msg%n%throwable</Property>
+        <Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n%throwable</Property>
+        <Property name="LOG_FILE">logs/myapp.log</Property>
+    </Properties>
+
+    <!-- Appenders -->
+    <!-- Console Appender with color support -->
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
+        </Console>
+
+        <!-- File Appender -->
+        <RollingFile name="FileAppender" fileName="${LOG_FILE}" filePattern="logs/myapp-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+    </Appenders>
+
+    <!-- Loggers -->
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <!-- Uncomment below line to enable FileAppender -->
+            <!-- <AppenderRef ref="FileAppender"/> -->
+        </Root>
+
+        <!-- Suppress Flink logs -->
+        <Logger name="org.apache.flink" level="warn" additivity="false"/>
+        <Logger name="org.apache.kafka" level="warn" additivity="false"/>
+        <Logger name="org.apache.zookeeper" level="warn" additivity="false"/>
+        <Logger name="akka" level="warn" additivity="false"/>
+
+        <!-- Set DEBUG level for a specific package -->
+        <Logger name="com.example.myapp" level="debug" additivity="false"/>
+
+        <!-- Set ERROR level for a specific package -->
+        <Logger name="org.springframework" level="error" additivity="false"/>
+    </Loggers>
+</Configuration>
