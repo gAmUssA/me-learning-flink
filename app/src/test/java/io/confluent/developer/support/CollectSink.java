@@ -4,21 +4,21 @@ import org.apache.flink.api.connector.sink2.Sink;
 import org.apache.flink.api.connector.sink2.SinkWriter;
 import org.apache.flink.api.connector.sink2.WriterInitContext;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CollectSink<T> implements Sink<T> {
 
   private static final List<Object> COLLECTED = new CopyOnWriteArrayList<>();
-  //deprecated
-  public SinkWriter<T> createWriter(final InitContext context) throws IOException {
+
+  @SuppressWarnings("deprecation")
+  public SinkWriter<T> createWriter(final InitContext context) {
     return null;
   }
 
   @Override
   public SinkWriter<T> createWriter(WriterInitContext context) {
-    return new SinkWriter<T>() {
+    return new SinkWriter<>() {
       @Override
       public void write(T element, Context context) {
         COLLECTED.add(element);
@@ -30,17 +30,15 @@ public class CollectSink<T> implements Sink<T> {
       }
 
       @Override
-      public void close() throws Exception {
+      public void close() {
         // No-op for this simple implementation
       }
     };
   }
 
-  public static <T> List<T> getCollectedElements() {
-    return (List<T>) List.copyOf(COLLECTED);
-  }
-
-  public static void clear() {
-    COLLECTED.clear();
+  @SuppressWarnings("unchecked")
+  public static <T> List<T> collectElements() {
+    List<?> copiedList = List.copyOf(COLLECTED);
+    return (List<T>) copiedList;
   }
 }

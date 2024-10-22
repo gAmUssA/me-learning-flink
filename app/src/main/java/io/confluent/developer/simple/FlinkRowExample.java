@@ -1,6 +1,7 @@
 package io.confluent.developer.simple;
 
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.types.Row;
@@ -27,7 +28,7 @@ public class FlinkRowExample {
 
           // Add a new field: uppercase name
           return Row.of(name, age, city, name.toUpperCase());
-        });
+        }).returns(Types.ROW(Types.STRING, Types.INT, Types.STRING, Types.STRING));
 
     // Print the result
     processedStream.print();

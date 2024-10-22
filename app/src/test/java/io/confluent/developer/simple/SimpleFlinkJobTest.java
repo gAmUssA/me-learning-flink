@@ -8,7 +8,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.test.junit5.MiniClusterExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
@@ -34,11 +33,12 @@ public class SimpleFlinkJobTest {
         .returns(Types.TUPLE(Types.STRING, Types.INT));
 
     // Add a custom sink to collect the results
-    resultStream.sinkTo(new CollectSink());
+    resultStream.sinkTo(new CollectSink<>());
 
     resultStream.print();
     // Execute the job
     JobExecutionResult result = env.execute();
+    System.out.println("Job ID: " + result.getJobID());
 
     // Verify the results
     List<Tuple2<String, Integer>> expected = List.of(
@@ -50,7 +50,7 @@ public class SimpleFlinkJobTest {
     );
 
     // Use AssertJ to verify results, ignoring order
-    assertThat(CollectSink.getCollectedElements())
+    assertThat(CollectSink.collectElements())
         .hasSameElementsAs(expected)
         .hasSize(expected.size());
   }

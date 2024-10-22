@@ -1,8 +1,10 @@
 package io.confluent.developer.simple;
 
+import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.types.Row;
+
 
 public class FlinkRow2Example {
 
@@ -15,7 +17,8 @@ public class FlinkRow2Example {
 
     // Perform a transformation
     DataStream<Row> resultStream = inputStream
-        .map(value -> Row.of(value, value.length()));
+        .map(value -> Row.of(value, value.length()))
+        .returns(Types.ROW(Types.STRING, Types.INT)); // без этого взрывается на этапе десериализации с помощью reflection
 
     // Print the result
     resultStream.print();

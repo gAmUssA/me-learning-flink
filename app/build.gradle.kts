@@ -20,19 +20,31 @@ val flinkVersion = "1.20.0"
 val testcontainersVersion = "1.20.2"
 val slf4jVersion = "1.7.36"
 val log4jVersion = "2.17.1"
+val jacksonVersion = "2.15.2"
+val flinkKafkaVersion = "3.3.0-1.20"
 
 configurations {
     create("flinkShadowJar")
 }
+
 
 dependencies {
     // Flink dependencies
     implementation("org.apache.flink:flink-java:$flinkVersion")
     implementation("org.apache.flink:flink-streaming-java:$flinkVersion")
     implementation("org.apache.flink:flink-clients:$flinkVersion")
+    implementation("org.apache.flink:flink-json:$flinkVersion")
+    implementation("org.apache.flink:flink-connector-base:$flinkVersion")
+    implementation("org.apache.flink:flink-connector-kafka:$flinkKafkaVersion")
     // end Flink dependencies
 
     implementation("net.datafaker:datafaker:2.4.0")
+
+    // Jackson for JSON processing
+    implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
 
     runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
     runtimeOnly("org.apache.logging.log4j:log4j-api:$log4jVersion")
@@ -46,7 +58,7 @@ dependencies {
     // TODO: add Kafka
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    
+
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
 

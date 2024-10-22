@@ -43,5 +43,7 @@
 
         <!-- Set ERROR level for a specific package -->
         <Logger name="org.springframework" level="error" additivity="false"/>
+
+        <logger name="io.confluent.developer.movies" level="DEBUG"/>
     </Loggers>
 </Configuration>
