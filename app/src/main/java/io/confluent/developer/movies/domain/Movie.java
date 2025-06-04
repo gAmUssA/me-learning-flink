@@ -1,12 +1,14 @@
 package io.confluent.developer.movies.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Movie implements Serializable {
 
   private static final long serialVersionUID = 1L;

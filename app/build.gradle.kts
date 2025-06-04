@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     application
     java
@@ -16,7 +18,8 @@ repositories {
     mavenCentral()
 }
 
-val flinkVersion = "1.20.0"
+//val flinkVersion = "1.20.0"
+val flinkVersion = "1.19.1"
 val testcontainersVersion = "1.20.2"
 val slf4jVersion = "1.7.36"
 val log4jVersion = "2.17.1"
@@ -24,7 +27,13 @@ val jacksonVersion = "2.15.2"
 val flinkKafkaVersion = "3.3.0-1.20"
 
 configurations {
-    create("flinkShadowJar")
+    create("flinkShadowJar") {
+        extendsFrom(configurations["implementation"])
+        exclude(group = "org.apache.flink", module = "force-shading")
+        exclude(group = "com.google.code.findbugs", module = "jsr305")
+        exclude(group = "org.slf4j")
+        exclude(group = "org.apache.logging.log4j")
+    }
 }
 
 
@@ -67,7 +76,7 @@ dependencies {
 }
 application {
     // Define the main class for the application.
-    mainClass.set("io.confluent.developer.App")
+    mainClass.set("io.confluent.developer.movies.MovieStreamingJob")
 }
 
 tasks.named<Test>("test") {
@@ -94,15 +103,23 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.named<Jar>("jar") {
+tasks.withType<ShadowJar> {
+    archiveClassifier.set("all")  // optional: adds classifier to jar name
+    mergeServiceFiles()  // merges service files if any
+
+    configurations = listOf(project.configurations["flinkShadowJar"])
+
+    // ensures the manifest has the main class
     manifest {
         attributes(
+            "Main-Class" to application.mainClass.get(),
             "Built-By" to System.getProperty("user.name"),
             "Build-Jdk" to System.getProperty("java.version")
         )
     }
 }
 
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    configurations = listOf(project.configurations["flinkShadowJar"])
+// Make the 'build' task depend on shadowJar
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
