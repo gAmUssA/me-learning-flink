@@ -1,0 +1,158 @@
+= Flink Learning Project
+
+This repository contains examples and demonstrations of Apache Flink applications for stream processing.
+
+== Overview
+
+This project serves as a learning resource for Apache Flink, showcasing various stream processing patterns and techniques. It includes:
+
+* Basic Flink examples (word count, row processing)
+* Movie rating streaming application with Kafka integration
+* Data generation utilities
+* Docker-based deployment environment
+
+== Project Structure
+
+[source]
+----
+app/                          # Main application code
+├── src/main/java/io/confluent/developer/
+│   ├── movies/               # Movie streaming application
+│   │   ├── MovieStreamingJob.java  # Main movie rating application
+│   │   ├── domain/           # Domain objects (Movie, Rating, etc.)
+│   │   ├── generator/        # Data generators
+│   │   └── config/           # Configuration classes
+│   └── simple/               # Simple Flink examples
+│       ├── WordCountJob.java # Classic word count example
+│       ├── FlinkRowExample.java # Row processing example
+│       └── ...               # Other examples
+├── src/main/resources/       # Configuration files
+├── build.gradle.kts          # Gradle build configuration
+docker-compose.yml            # Docker environment setup
+----
+
+== Technology Stack
+
+* Apache Flink 1.19.1
+* Java 17
+* Apache Kafka (Confluent Platform 7.9.1) in KRaft mode (without Zookeeper)
+* Gradle build system
+
+== Getting Started
+
+=== Prerequisites
+
+* Java 17 or later
+* Docker and Docker Compose
+* Gradle
+
+=== Setup
+
+1. Clone the repository
+2. Start the Docker environment:
++
+[source,bash]
+----
+docker-compose up -d
+----
+
+3. Build the application:
++
+[source,bash]
+----
+./gradlew build
+----
+
+=== Running Examples
+
+==== Simple Examples
+
+Run the WordCount example:
+
+[source,bash]
+----
+./gradlew run --args='io.confluent.developer.simple.WordCountJob'
+----
+
+==== Movie Streaming Application
+
+The main application is a movie rating system that:
+
+1. Generates movie data and ratings
+2. Processes these streams with Flink operations
+3. Calculates average ratings for movies
+4. Joins movies with their ratings
+5. Outputs the data to Kafka topics
+
+Run the movie streaming application:
+
+[source,bash]
+----
+./gradlew run
+----
+
+Or with explicit class:
+
+[source,bash]
+----
+./gradlew run --args='io.confluent.developer.movies.MovieStreamingJob'
+----
+
+=== Kafka Topics
+
+The application uses the following Kafka topics:
+
+* `movies` - Raw movie data
+* `ratings` - User ratings for movies
+* `rated-movies` - Movies joined with their average ratings
+
+== Examples Explained
+
+=== WordCountJob
+
+A classic example that counts word occurrences in a text stream:
+
+* Splits sentences into words
+* Counts occurrences of each word
+* Demonstrates basic stream processing concepts
+
+=== FlinkRowExample
+
+Shows how to work with Flink's Row type:
+
+* Creates a stream of Row objects
+* Processes rows by adding new fields
+* Demonstrates working with structured data
+
+=== MovieStreamingJob
+
+A more complex example that:
+
+* Generates movie and rating data
+* Processes streams with windowing operations
+* Calculates average ratings
+* Joins data streams
+* Outputs to Kafka
+
+== Development
+
+=== Building
+
+Build the application JAR:
+
+[source,bash]
+----
+./gradlew shadowJar
+----
+
+This creates an "uber-jar" with all dependencies included.
+
+=== Flink Dashboard
+
+Access the Flink dashboard at http://localhost:8082 when the Docker environment is running.
+
+== Resources
+
+* https://flink.apache.org/docs/stable/[Apache Flink Documentation]
+* https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/overview/[Flink DataStream API]
+* https://kafka.apache.org/documentation/[Apache Kafka Documentation]

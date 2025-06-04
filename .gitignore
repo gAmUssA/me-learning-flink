@@ -202,3 +202,4 @@ gradle-app.setting
 
 */bin
 flink-*
+.vscode
